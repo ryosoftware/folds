@@ -116,7 +116,6 @@ class FoldCounterService : Service(), SensorEventListener {
                 if (isFolded && !lastState) {
                     foldCount++
                     saveFoldCount()
-                    updateWidget()
                     Log.d(TAG, "Fold detected! Total: $foldCount")
                 }
 
@@ -133,20 +132,6 @@ class FoldCounterService : Service(), SensorEventListener {
         prefs.edit().putInt(FOLD_COUNT_KEY, foldCount).apply()
     }
 
-    private fun updateWidget() {
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(
-            FoldCounterWidgetProvider.getComponentName(this)
-        )
-
-        // Atualizar todos os widgets
-        for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(packageName, R.layout.fold_counter_widget)
-            views.setTextViewText(R.id.fold_count_text, foldCount.toString())
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
-    }
-
     @SuppressLint("ObsoleteSdkInt")
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -160,7 +145,6 @@ class FoldCounterService : Service(), SensorEventListener {
         }
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         // Desregistrar o listener do sensor quando o serviço for destruído
@@ -170,7 +154,6 @@ class FoldCounterService : Service(), SensorEventListener {
         // Parar o serviço em primeiro plano
         stopForeground(true)  // Passa true para remover a notificação
         stopSelf()  // Parar o serviço
-
     }
 
     companion object {
