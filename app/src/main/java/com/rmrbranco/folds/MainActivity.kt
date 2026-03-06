@@ -47,16 +47,16 @@ class MainActivity : ComponentActivity() {
 
             if (!isIgnoringBatteryOptimizations) {  // Se não estiver ignorando otimizações de bateria
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Permission required")
-                builder.setMessage("To ensure the continuous operation of the app, allow background usage in the settings.\n\nAfter enabling the permission, don't forget to create the Widget.")
-                builder.setPositiveButton("Go to Settings") { _, _ ->
+                builder.setTitle(R.string.permission_required)
+                builder.setMessage(R.string.disable_battery_optimization_message)
+                builder.setPositiveButton(R.string.go_to_settings) { _, _ ->
                     // Redireciona o usuário para as configurações do aplicativo
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     intent.data = Uri.parse("package:${packageName}")
                     startActivity(intent)
                 }
 
-                builder.setNegativeButton("Cancel") { dialog, _ ->
+                builder.setNegativeButton(R.string.cancel) { dialog, _ ->
                     // Fecha o diálogo e encerra a atividade caso o usuário cancele
                     dialog.dismiss()
                     finish()  // Finaliza a atividade atual
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
             FoldsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Folds",
+                        name = getString(R.string.app_name),
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Welcome to $name!",
+        text = getString(R.string.welcome_message, name),
         modifier = modifier
     )
 }

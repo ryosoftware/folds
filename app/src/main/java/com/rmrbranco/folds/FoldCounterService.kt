@@ -62,8 +62,8 @@ class FoldCounterService : Service(), SensorEventListener {
 
         // Criar a notificação
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Fold Counter Service")
-            .setContentText("Counting folds...")
+            .setContentTitle(R.string.notification_title)
+            .setContentText(getString(R.string.notification_content))
             .setSmallIcon(R.drawable.ic_launcher_foreground)  // Substitua com seu ícone
             .build()
 
@@ -137,7 +137,7 @@ class FoldCounterService : Service(), SensorEventListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Fold Counter Service Channel",
+                getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             val notificationManager = getSystemService(NotificationManager::class.java)
