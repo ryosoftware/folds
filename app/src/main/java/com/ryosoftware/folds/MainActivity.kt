@@ -11,6 +11,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -18,6 +19,16 @@ import androidx.fragment.app.FragmentActivity
 import kotlin.system.exitProcess
 
 class MainActivity : FragmentActivity() {
+    private val batteryOptimizationLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val isIgnoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
+        if (isIgnoringBatteryOptimizations) {
+            FoldCounterService.startService(this)
+        } else {
+            killApp()
+        }
+    }
+
     @SuppressLint("ObsoleteSdkInt", "UseKtx", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +58,7 @@ class MainActivity : FragmentActivity() {
             val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
             val isIgnoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
 
-            if (!isIgnoringBatteryOptimizations) {
+            if (! isIgnoringBatteryOptimizations) {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle(R.string.permission_required)
                 builder.setMessage(R.string.disable_battery_optimization_message)
@@ -55,21 +66,26 @@ class MainActivity : FragmentActivity() {
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
                         data = Uri.parse("package:${packageName}")
                     }
-                    startActivity(intent)
+                    batteryOptimizationLauncher.launch(intent)
                 }
-
                 builder.setNegativeButton(R.string.exit) { dialog, _ ->
-                    dialog.dismiss()
-                    finish()
-                    exitProcess(0)
+                    killApp()
                 }
-
                 builder.show()
-
             }
+            else {
+                FoldCounterService.startService(this)
+            }
+        } else {
+            FoldCounterService.startService(this)
         }
 
         enableEdgeToEdge()
+    }
+
+    private fun killApp() {
+        finish()
+        exitProcess(0)
     }
 }
 

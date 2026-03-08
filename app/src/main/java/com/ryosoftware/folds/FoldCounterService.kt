@@ -166,5 +166,10 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
         public const val FOLD_STATUS_CURRENT_THRESHOLD = "current-threshold"
         public const val UNFOLDED_MIN_THRESHOLD_DEFAULT = 40.0f
         private const val CHANNEL_ID = "FoldCounterServiceChannel"
+
+        public fun startService(context: Context) {
+            val serviceIntent = Intent(context, FoldCounterService::class.java)
+            context.startForegroundService(serviceIntent)
+        }
     }
 }
