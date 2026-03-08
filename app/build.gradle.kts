@@ -20,7 +20,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = generateVersionCode()
-        versionName = "1.0.${versionCode}"
+        versionName = "1.1.${versionCode}"
     }
     buildFeatures {
         buildConfig = true
