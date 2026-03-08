@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/settings">
+        <SeekBarPreference
+            app:key="unfolded-min-threshold"
+            app:title="@string/min_threshold"
+            android:inputType="numberDecimal"
+            app:dialogTitle="@string/min_threshold"
+            app:updatesContinuously="true"
+            app:showSeekBarValue="false"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/hinge_stats">
+        <Preference
+            app:key="current-threshold"
+            app:title="@string/current_threshold" />
+
+        <Preference
+            app:key="unfolds-count"
+            app:title="@string/unfolds_count" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/app_info">
+        <Preference
+            app:key="app-version"
+            app:title="@string/app_version" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

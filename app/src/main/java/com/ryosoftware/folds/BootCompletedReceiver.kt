@@ -1,16 +1,9 @@
-package com.rmrbranco.folds
+package com.ryosoftware.folds
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-
-/**
- * BootCompletedReceiver is a BroadcastReceiver that listens for system boot completion and reboot events.
- *
- * Upon receiving either of these broadcasts, it starts the FoldCounterService. This ensures that the
- * FoldCounterService is running after the device has been rebooted or has completed the initial boot process.
- */
 
 class BootCompletedReceiver : BroadcastReceiver() {
 

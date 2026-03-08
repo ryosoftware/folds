@@ -1,4 +1,4 @@
-package com.rmrbranco.folds.ui.theme
+package com.ryosoftware.folds.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

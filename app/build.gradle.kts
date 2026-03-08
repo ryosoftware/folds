@@ -5,19 +5,19 @@ plugins {
 }
 
 android {
-    namespace = "com.rmrbranco.folds"
-    compileSdk = 35
+    namespace = "com.ryosoftware.folds"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.rmrbranco.folds"
-        minSdk = 28
-        targetSdk = 35
-        versionCode = 20250304
-        versionName = "20250304"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        applicationId = "com.ryosoftware.folds"
+        minSdk = 29
+        targetSdk = 36
+        versionCode = 20250308
+        versionName = "20250308"
     }
-
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -28,11 +28,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
     buildFeatures {
         compose = true
@@ -50,11 +52,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.fragment.ktx)
 }
