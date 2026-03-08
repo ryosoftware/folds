@@ -4,21 +4,24 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.Preference
 import kotlin.system.exitProcess
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     private val batteryOptimizationLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val isIgnoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
@@ -29,11 +32,15 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private lateinit var prefs: SharedPreferences
+
     @SuppressLint("ObsoleteSdkInt", "UseKtx", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.main_activity)
+
+        prefs = getSharedPreferences(FoldCounterService.PREFS_NAME, Context.MODE_PRIVATE)
 
         val container: View = findViewById(R.id.settings_container)
         ViewCompat.setOnApplyWindowInsetsListener(container) { view, windowInsets ->
@@ -86,6 +93,33 @@ class MainActivity : FragmentActivity() {
     private fun killApp() {
         finish()
         exitProcess(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        showUnfoldsCount()
+
+        prefs.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        prefs.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {
+        when (key) {
+            FoldCounterService.UNFOLDS_COUNT_KEY -> {
+                showUnfoldsCount()
+            }
+        }
+    }
+
+    private fun showUnfoldsCount() {
+        val unfoldsCount = prefs.getInt(FoldCounterService.UNFOLDS_COUNT_KEY, 0)
+        findViewById<TextView>(R.id.unfolds_count).setText(unfoldsCount.toString())
     }
 }
 

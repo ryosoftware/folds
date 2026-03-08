@@ -16,7 +16,6 @@ import android.net.Uri
 import android.provider.Settings
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
-
     private lateinit var prefs: SharedPreferences
 
     private var unfoldedRangeResolution = 1.0f
@@ -75,7 +74,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 showCurrentThreshold()
             }
             FoldCounterService.UNFOLDS_COUNT_KEY -> {
-                showFoldsCount()
+                showUnfoldsCount()
             }
         }
     }
@@ -97,7 +96,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         return dateTime.format(formatter)
     }
 
-    private fun showFoldsCount() {
+    private fun showUnfoldsCount() {
         val foldCountPref = findPreference<Preference>(FoldCounterService.UNFOLDS_COUNT_KEY)
         var foldCountPrefSummary = getString(R.string.unfolds_count_none)
         val unfoldsCount = prefs.getInt(FoldCounterService.UNFOLDS_COUNT_KEY, 0)
@@ -111,6 +110,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun showCurrentValues() {
         showCurrentThreshold()
 
-        showFoldsCount()
+        showUnfoldsCount()
     }
 }
