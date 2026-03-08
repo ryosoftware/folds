@@ -9,7 +9,9 @@
     <string name="notification_content">Contando desplegados&#8230;</string>
     <string name="settings">Configuración</string>
     <string name="min_threshold">Umbral de apertura mínimo</string>
-    <string name="min_threshold_description">El dispositivo se considerará desplegado si el ángulo de apertura es mayor o igual que %1$dº</string>
+    <string name="min_threshold_description">El dispositivo se considerará desplegado si el ángulo de apertura es mayor o igual que %1$s</string>
+    <string name="degrees_from_int">%1$dº</string>
+    <string name="degrees_from_float">%1$.01fº</string>
     <string name="hinge_stats">Estadísticas de la bisagra</string>
     <string name="current_threshold">Ángulo de apertura</string>
     <string name="unfolds_count">Contador de desplegados</string>

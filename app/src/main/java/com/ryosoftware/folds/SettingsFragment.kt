@@ -14,17 +14,18 @@ import java.time.format.FormatStyle
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var prefs: SharedPreferences
 
+    private var unfoldedRangeResolution = 1.0f
+
     @SuppressLint("UseKtx")
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         prefs = requireContext().getSharedPreferences(FoldCounterService.PREFS_NAME, Context.MODE_PRIVATE)
+
+        unfoldedRangeResolution = prefs.getFloat(FoldCounterService.UNFOLDED_RANGE_RESOLUTION_KEY, 1.0f)
 
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
@@ -40,15 +41,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         val thresholdPref = findPreference<SeekBarPreference>(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY)
-        thresholdPref?.summary = getString(R.string.min_threshold_description, prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt())
+        thresholdPref?.summary = getString(R.string.min_threshold_description, getString(R.string.degrees_from_int, prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt()))
         thresholdPref?.max = prefs.getFloat(FoldCounterService.UNFOLDED_MAX_RANGE_KEY, 360.0f).toInt()
         thresholdPref?.value = prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt()
-        thresholdPref?.seekBarIncrement = prefs.getFloat(FoldCounterService.UNFOLDED_RANGE_RESOLUTION_KEY, 1.0f).toInt()
+        thresholdPref?.seekBarIncrement = unfoldedRangeResolution.toInt()
         thresholdPref?.setOnPreferenceChangeListener { _, newValue ->
             val value = (newValue as? Int)?.toFloat()
             if (value != null) {
                 prefs.edit().putFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, value)?.apply()
-                thresholdPref.summary = getString(R.string.min_threshold_description, value.toInt())
+                thresholdPref.summary = getString(R.string.min_threshold_description, getString(R.string.degrees_from_int, value.toInt()))
             }
             true
         }
@@ -80,7 +81,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     private fun showCurrentThreshold() {
-        findPreference<Preference>(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD)?.summary = prefs.getFloat(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD, 0.0f).toString()
+        val value = prefs.getFloat(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD, 0.0f)
+        val currentThresholdPref = findPreference<Preference>(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD)
+        if (unfoldedRangeResolution < 1.0f) {
+            currentThresholdPref?.summary = getString(R.string.degrees_from_float, value)
+        } else {
+            currentThresholdPref?.summary = getString(R.string.degrees_from_int, value.toInt())
+        }
     }
 
     private fun getDateTimeFromTimeStamp(timestamp: Long) : String {
