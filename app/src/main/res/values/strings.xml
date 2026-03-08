@@ -8,7 +8,7 @@
     <string name="notification_title">Unfold Counter Service</string>
     <string name="notification_content">Counting unfolds&#8230;</string>
     <string name="settings">Settings</string>
-    <string name="min_threshold">Minimum threshold to be unfolded</string>
+    <string name="min_threshold">Minimum threshold</string>
     <string name="min_threshold_description">The device will be considered unfolded if the opening angle is greater than or equal to %1$dº</string>
     <string name="hinge_stats">Hinge Stats</string>
     <string name="current_threshold">Current threshold</string>
