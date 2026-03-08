@@ -1,3 +1,10 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
+fun generateVersionCode(): Int {
+    return (System.currentTimeMillis() / 1000).toInt()
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,8 +19,8 @@ android {
         applicationId = "com.ryosoftware.folds"
         minSdk = 29
         targetSdk = 36
-        versionCode = 20250308
-        versionName = "20250308"
+        versionCode = generateVersionCode()
+        versionName = "1.0.${versionCode}"
     }
     buildFeatures {
         buildConfig = true

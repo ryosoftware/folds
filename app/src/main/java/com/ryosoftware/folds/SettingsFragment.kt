@@ -14,6 +14,9 @@ import java.time.format.FormatStyle
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -26,7 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
         val appVersionPref = findPreference<Preference>("app-version")
-        appVersionPref?.summary = BuildConfig.VERSION_NAME
+        appVersionPref?.summary = getString(R.string.app_version_description, BuildConfig.VERSION_NAME, getDateTimeFromTimeStamp(BuildConfig.VERSION_CODE.toLong() * 1000))
         appVersionPref?.setOnPreferenceClickListener {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.parse("package:${context?.packageName}")
@@ -80,17 +83,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         findPreference<Preference>(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD)?.summary = prefs.getFloat(FoldCounterService.FOLD_STATUS_CURRENT_THRESHOLD, 0.0f).toString()
     }
 
+    private fun getDateTimeFromTimeStamp(timestamp: Long) : String {
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        val dateTime = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+        return dateTime.format(formatter)
+    }
+
     private fun showFoldsCount() {
         val foldCountPref = findPreference<Preference>(FoldCounterService.UNFOLDS_COUNT_KEY)
         var foldCountPrefSummary = getString(R.string.unfolds_count_none)
         val unfoldsCount = prefs.getInt(FoldCounterService.UNFOLDS_COUNT_KEY, 0)
 
         if (unfoldsCount != 0) {
-            val instant = prefs.getLong(FoldCounterService.UNFOLDS_COUNT_START_TIME_KEY, 0)
-            val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-            val dateTime = Instant.ofEpochMilli(instant).atZone(ZoneId.systemDefault()).toLocalDateTime()
-
-            foldCountPrefSummary = getString(R.string.unfolds_count_other, unfoldsCount, dateTime.format(formatter))
+            foldCountPrefSummary = getString(R.string.unfolds_count_other, unfoldsCount, getDateTimeFromTimeStamp(prefs.getLong(FoldCounterService.UNFOLDS_COUNT_START_TIME_KEY, 0)))
         }
 
         foldCountPref?.summary = foldCountPrefSummary
