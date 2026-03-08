@@ -164,7 +164,7 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
 
         public const val UNFOLDED_RANGE_RESOLUTION_KEY = "unfolded-range-resolution"
         public const val FOLD_STATUS_CURRENT_THRESHOLD = "current-threshold"
-        public const val UNFOLDED_MIN_THRESHOLD_DEFAULT = 180.0f
+        public const val UNFOLDED_MIN_THRESHOLD_DEFAULT = 40.0f
         private const val CHANNEL_ID = "FoldCounterServiceChannel"
     }
 }
