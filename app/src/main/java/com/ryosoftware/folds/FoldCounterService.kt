@@ -50,18 +50,26 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
         unfoldedMinThreshold = prefs.getFloat(UNFOLDED_MIN_THRESHOLD_KEY, UNFOLDED_MIN_THRESHOLD_DEFAULT)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val deviceSensors: List<Sensor> = sensorManager.getSensorList(Sensor.TYPE_ALL)
 
-        for (sensor in deviceSensors) {
-            if (sensor.name.contains("hinge", ignoreCase = true) ||
-                sensor.name.contains("fold", ignoreCase = true)) {
-                hinge = sensor
-                prefs.edit().apply() {
-                    putFloat(UNFOLDED_MAX_RANGE_KEY, sensor.maximumRange)
-                    putFloat(UNFOLDED_RANGE_RESOLUTION_KEY, sensor.resolution)
-                    apply()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            hinge = sensorManager.getDefaultSensor(Sensor.TYPE_HINGE_ANGLE)
+        }
+
+        if (hinge == null) {
+            val deviceSensors: List<Sensor> = sensorManager.getSensorList(Sensor.TYPE_ALL)
+
+            for (sensor in deviceSensors) {
+                if (sensor.name.contains("hinge", ignoreCase = true) ||
+                    sensor.name.contains("fold", ignoreCase = true)
+                ) {
+                    hinge = sensor
+                    prefs.edit().apply() {
+                        putFloat(UNFOLDED_MAX_RANGE_KEY, sensor.maximumRange)
+                        putFloat(UNFOLDED_RANGE_RESOLUTION_KEY, sensor.resolution)
+                        apply()
+                    }
+                    break
                 }
-                break
             }
         }
 
