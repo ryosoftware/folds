@@ -2,11 +2,12 @@
 
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/settings">
+    <PreferenceCategory
+        app:title="@string/settings">
+
         <SeekBarPreference
             app:key="unfolded-min-threshold"
             app:title="@string/min_threshold"
-            app:dialogTitle="@string/min_threshold"
             app:min="0"
             app:updatesContinuously="true"
             app:showSeekBarValue="false"
@@ -14,7 +15,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/hinge_stats">
+    <PreferenceCategory
+        app:title="@string/hinge_stats">
+
         <Preference
             app:key="current-threshold"
             app:title="@string/current_threshold" />
@@ -25,7 +28,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/app_info">
+    <PreferenceCategory
+        app:title="@string/app_info">
+
         <Preference
             app:key="app-version"
             app:title="@string/app_version" />

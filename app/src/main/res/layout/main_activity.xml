@@ -17,7 +17,8 @@
         android:layout_margin="10dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="60sp"
+        android:textSize="66sp"
+        android:textColor="?attr/colorPrimary"
         android:layout_weight="20" />
 
     <FrameLayout

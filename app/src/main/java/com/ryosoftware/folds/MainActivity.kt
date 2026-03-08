@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
+import com.google.android.material.color.DynamicColors
 import kotlin.system.exitProcess
 
 class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -36,6 +37,8 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
 
     @SuppressLint("ObsoleteSdkInt", "UseKtx", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
+        DynamicColors.applyToActivityIfAvailable(this)
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.main_activity)

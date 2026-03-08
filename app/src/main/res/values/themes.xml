@@ -2,6 +2,6 @@
 
 <resources>
 
-    <style name="Theme.Folds" parent="@style/Theme.AppCompat.DayNight.NoActionBar" />
+    <style name="Theme.Folds" parent="Theme.Material3.DayNight.NoActionBar" />
 
 </resources>

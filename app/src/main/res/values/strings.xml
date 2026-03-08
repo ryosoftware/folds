@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Folds</string>
+    <string name="app_name">Unfolds Counter</string>
     <string name="allow">Allow</string>
     <string name="exit">Exit</string>
     <string name="permission_required">Permission required</string>
