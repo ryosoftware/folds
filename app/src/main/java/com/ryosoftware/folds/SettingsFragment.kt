@@ -38,8 +38,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val thresholdPref = findPreference<SeekBarPreference>(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY)
         thresholdPref?.summary = getString(R.string.min_threshold_description, prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt())
-        thresholdPref?.value = prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt()
         thresholdPref?.max = prefs.getFloat(FoldCounterService.UNFOLDED_MAX_RANGE_KEY, 360.0f).toInt()
+        thresholdPref?.value = prefs.getFloat(FoldCounterService.UNFOLDED_MIN_THRESHOLD_KEY, FoldCounterService.UNFOLDED_MIN_THRESHOLD_DEFAULT).toInt()
         thresholdPref?.seekBarIncrement = prefs.getFloat(FoldCounterService.UNFOLDED_RANGE_RESOLUTION_KEY, 1.0f).toInt()
         thresholdPref?.setOnPreferenceChangeListener { _, newValue ->
             val value = (newValue as? Int)?.toFloat()

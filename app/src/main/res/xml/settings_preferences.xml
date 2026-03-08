@@ -6,8 +6,8 @@
         <SeekBarPreference
             app:key="unfolded-min-threshold"
             app:title="@string/min_threshold"
-            android:inputType="numberDecimal"
             app:dialogTitle="@string/min_threshold"
+            app:min="0"
             app:updatesContinuously="true"
             app:showSeekBarValue="false"
             android:persistent="false" />
