@@ -12,12 +12,15 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import java.time.Instant
+import java.time.LocalTime
 
-class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnSharedPreferenceChangeListener {
+class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
+    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var sensorManager: SensorManager
     private var hinge: Sensor? = null
@@ -26,12 +29,18 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
     private var unfoldedMinThreshold = 1.0f
 
     private var isUnfolded = false
-    private var isUnfoldedInit = false
+
+    private var stateStartTime = 0L
 
     @SuppressLint("UseKtx")
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Service created")
+    }
+
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "Service started")
 
         createNotificationChannel()
 
@@ -77,11 +86,11 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
             Log.d(TAG, "Registered bending sensor: ${it.name}")
         } ?: Log.e(TAG, "No bend sensor found!")
-    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "Service started")
-        return START_STICKY
+        val now = LocalTime.now()
+        handler.postDelayed(this, HEARTBEAT_INTERVAL + (60 - now.second) * 1000)
+
+        return START_STICKY        
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -99,36 +108,52 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
             if (it.sensor == hinge) {
-
                 Log.d(TAG, "Sensor value: ${it.values.joinToString()}")
 
-                val isCurrentlyUnfolded = it.values[0] >= unfoldedMinThreshold
-
-                if (isUnfoldedInit && isCurrentlyUnfolded && (! isUnfolded)) {
-                    unfoldsCount++
-                    Log.d(TAG, "Fold detected! Total: ${unfoldsCount}")
-                }
-
-                saveCurrentData(it.values[0], isCurrentlyUnfolded && !isUnfolded)
-
-                isUnfolded = isCurrentlyUnfolded
-                isUnfoldedInit = true
+                saveCurrentData(it.values[0])
             }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
-    private fun saveCurrentData(currentThreshold: Float, foldCountChanged: Boolean) {
+    private fun saveCurrentData(currentThreshold : Float) {
+        val now = System.currentTimeMillis()
+        val isCurrentlyUnfolded = (currentThreshold >= unfoldedMinThreshold)
         prefs.edit().apply() {
             putFloat(FOLD_STATUS_CURRENT_THRESHOLD, currentThreshold)
-            if (foldCountChanged) {
-                putInt(UNFOLDS_COUNT_KEY, unfoldsCount)
-                if (! prefs.contains(UNFOLDS_COUNT_START_TIME_KEY)) { putLong(UNFOLDS_COUNT_START_TIME_KEY, Instant.now().toEpochMilli()) }
+            if (stateStartTime != 0L) {
+                val key = if (isUnfolded) TIME_UNFOLDED_KEY else TIME_FOLDED_KEY
+                putLong(key, prefs.getLong(key, 0L) + (now - stateStartTime) / 1000)
+                if ((! isUnfolded) && isCurrentlyUnfolded) {
+                    putInt(UNFOLDS_COUNT_KEY, ++ unfoldsCount)
+                    if (! prefs.contains(UNFOLDS_COUNT_START_TIME_KEY)) { putLong(UNFOLDS_COUNT_START_TIME_KEY, System.currentTimeMillis()) }
+                }
             }
             apply()
         }
+        stateStartTime = now
+        isUnfolded = isCurrentlyUnfolded
     }
+
+    private fun saveCurrentData() {
+        if (stateStartTime != 0L) {
+            val now = System.currentTimeMillis()
+            prefs.edit().apply() {
+                val key = if (isUnfolded) TIME_UNFOLDED_KEY else TIME_FOLDED_KEY
+                putLong(key, prefs.getLong(key, 0L) + (now - stateStartTime) / 1000)
+                apply()
+            }
+            stateStartTime = now
+        }
+    }
+
+    override fun run() {
+        Log.d(TAG, "Heartbeat event executed")
+        saveCurrentData()
+        handler.postDelayed(this, HEARTBEAT_INTERVAL) 
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -146,22 +171,24 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
         super.onDestroy()
         prefs.unregisterOnSharedPreferenceChangeListener(this)
 
-        sensorManager.unregisterListener(this)
-        Log.d(TAG, "Service destroyed")
+        handler.removeCallbacks(this)
 
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
+        sensorManager.unregisterListener(this)
+
+        Log.d(TAG, "Service destroyed")
+        super.onDestroy()
     }
 
     companion object {
         private const val TAG = "FoldCounterService"
         public const val PREFS_NAME = "FoldCounterPrefs"
+        private const val HEARTBEAT_INTERVAL = 60 * 1000L
         public const val UNFOLDS_COUNT_KEY = "unfolds-count"
         public const val UNFOLDS_COUNT_START_TIME_KEY = "unfolds-count-start-time"
+        public const val TIME_FOLDED_KEY = "time-folded"
+        public const val TIME_UNFOLDED_KEY = "time-unfolded"
         public const val UNFOLDED_MIN_THRESHOLD_KEY = "unfolded-min-threshold"
-
         public const val UNFOLDED_MAX_RANGE_KEY = "unfolded-max-range"
-
         public const val UNFOLDED_RANGE_RESOLUTION_KEY = "unfolded-range-resolution"
         public const val FOLD_STATUS_CURRENT_THRESHOLD = "current-threshold"
         public const val UNFOLDED_MIN_THRESHOLD_DEFAULT = 40.0f

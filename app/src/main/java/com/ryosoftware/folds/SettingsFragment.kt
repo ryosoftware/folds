@@ -14,6 +14,7 @@ import java.time.format.FormatStyle
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import com.ryosoftware.folds.ui.theme.FoldsTheme
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var prefs: SharedPreferences
@@ -76,6 +77,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             FoldCounterService.UNFOLDS_COUNT_KEY -> {
                 showUnfoldsCount()
             }
+            FoldCounterService.TIME_UNFOLDED_KEY -> {
+                showUnfoldsCount()
+            }
+            FoldCounterService.TIME_FOLDED_KEY -> {
+                showUnfoldsCount()
+            }
         }
     }
 
@@ -96,16 +103,41 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         return dateTime.format(formatter)
     }
 
+    private fun getDurationString(timeInSeconds : Long) : String {
+        var seconds = timeInSeconds
+        val days = seconds / 86400L
+        seconds %= 86400L
+        val hours = seconds / 3600L
+        seconds %= 3600L
+        val minutes = seconds / 60L
+        seconds %= 60L
+        val parts = mutableListOf<String>()
+
+        if (days > 0) parts.add(resources.getQuantityString(R.plurals.days, days.toInt(), days))
+        if (hours > 0) parts.add(resources.getQuantityString(R.plurals.hours, hours.toInt(), hours))
+        if ((minutes > 0) || (parts.isEmpty())) parts.add(resources.getQuantityString(R.plurals.minutes, minutes.toInt(), minutes))
+
+        if (parts.size == 1) return parts[0]
+
+        val string = parts.subList(0, parts.size - 1).joinToString(getString(R.string.middle_lists_separator))
+        return string + getString(R.string.last_lists_separator) + parts.last()
+    }
+
     private fun showUnfoldsCount() {
         val foldCountPref = findPreference<Preference>(FoldCounterService.UNFOLDS_COUNT_KEY)
+        val foldTimePref = findPreference<Preference>(FoldCounterService.TIME_UNFOLDED_KEY)
         var foldCountPrefSummary = getString(R.string.unfolds_count_none)
         val unfoldsCount = prefs.getInt(FoldCounterService.UNFOLDS_COUNT_KEY, 0)
+        val unfoldedTime = prefs.getLong(FoldCounterService.TIME_UNFOLDED_KEY, 0)
+        val foldedTime = prefs.getLong(FoldCounterService.TIME_FOLDED_KEY, 0)
+        val totalTime = unfoldedTime + foldedTime
 
         if (unfoldsCount != 0) {
             foldCountPrefSummary = getString(R.string.unfolds_count_other, unfoldsCount, getDateTimeFromTimeStamp(prefs.getLong(FoldCounterService.UNFOLDS_COUNT_START_TIME_KEY, 0)))
         }
 
         foldCountPref?.summary = foldCountPrefSummary
+        foldTimePref?.summary = getString(R.string.unfolded_time_description, getDurationString(unfoldedTime), getString(if (totalTime == 0L) R.string.percent_from_int else R.string.percent_from_float, if (totalTime == 0L) 100 else (unfoldedTime.toFloat() / totalTime.toFloat()) * 100))
     }
     private fun showCurrentValues() {
         showCurrentThreshold()

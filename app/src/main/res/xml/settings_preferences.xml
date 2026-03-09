@@ -26,6 +26,10 @@
             app:key="unfolds-count"
             app:title="@string/unfolds_count" />
 
+        <Preference
+            app:key="time-unfolded"
+            app:title="@string/unfolded_time" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

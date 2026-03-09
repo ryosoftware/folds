@@ -12,12 +12,18 @@
     <string name="min_threshold_description">La pantalla se considerará desplegada/abierta si el ángulo de apertura es mayor o igual que %1$s</string>
     <string name="degrees_from_int">%1$dº</string>
     <string name="degrees_from_float">%1$.01fº</string>
+    <string name="percent_from_int">%1$d%%</string>
+    <string name="percent_from_float">%1$.01f%%</string>
     <string name="hinge_stats">Estadísticas de la bisagra</string>
     <string name="current_threshold">Ángulo de apertura</string>
     <string name="unfolds_count">Contador de desplegados</string>
     <string name="unfolds_count_none">0</string>
     <string name="unfolds_count_other">%1$d (desde el %2$s)</string>
+    <string name="unfolded_time">Tiempo desplegado</string>
+    <string name="unfolded_time_description">%1$s (%2$s del tiempo)</string>
     <string name="app_info">Información de la aplicación</string>
     <string name="app_version">Versión</string>
     <string name="app_version_description">%1$s (compilada el %2$s)</string>
+    <string name="middle_lists_separator">,\u0020</string>
+    <string name="last_lists_separator">\u0020y\u0020</string>
 </resources>

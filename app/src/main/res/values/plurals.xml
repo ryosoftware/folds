@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <plurals name="days">
+        <item quantity="one">%1$d d.</item>
+        <item quantity="other">%1$d ds.</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d hr.</item>
+        <item quantity="other">%1$d hrs.</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d min.</item>
+        <item quantity="other">%1$d mins.</item>
+    </plurals>
+
+</resources>
