@@ -1,4 +1,4 @@
-package com.ryosoftware.folds.ui.theme
+package com.ryosoftware.unfolds.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

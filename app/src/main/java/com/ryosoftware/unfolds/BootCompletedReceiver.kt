@@ -1,4 +1,4 @@
-package com.ryosoftware.folds
+package com.ryosoftware.unfolds
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,7 +13,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
             intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) {
             Log.d(TAG, "Disposition reinitialised, starting service")
 
-            val serviceIntent = Intent(context, FoldCounterService::class.java)
+            val serviceIntent = Intent(context, UnfoldsCounterService::class.java)
             context.startService(serviceIntent)
         }
     }

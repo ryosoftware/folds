@@ -30,6 +30,10 @@
             app:key="time-unfolded"
             app:title="@string/unfolded_time" />
 
+        <Preference
+            android:key="unfolds-count-start-time"
+            android:title="@string/stats_begin_date" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

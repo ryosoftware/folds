@@ -1,4 +1,4 @@
-package com.ryosoftware.folds
+package com.ryosoftware.unfolds
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -19,7 +19,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.time.LocalTime
 
-class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
+class UnfoldsCounterService : Service(), SensorEventListener, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
     private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var sensorManager: SensorManager
@@ -125,10 +125,8 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
             if (stateStartTime != 0L) {
                 val key = if (isUnfolded) TIME_UNFOLDED_KEY else TIME_FOLDED_KEY
                 putLong(key, prefs.getLong(key, 0L) + (now - stateStartTime) / 1000)
-                if ((! isUnfolded) && isCurrentlyUnfolded) {
-                    putInt(UNFOLDS_COUNT_KEY, ++ unfoldsCount)
-                    if (! prefs.contains(UNFOLDS_COUNT_START_TIME_KEY)) { putLong(UNFOLDS_COUNT_START_TIME_KEY, System.currentTimeMillis()) }
-                }
+                if ((! isUnfolded) && isCurrentlyUnfolded) putInt(UNFOLDS_COUNT_KEY, ++ unfoldsCount)
+                if (! prefs.contains(UNFOLDS_COUNT_START_TIME_KEY)) putLong(UNFOLDS_COUNT_START_TIME_KEY, now)
             }
             apply()
         }
@@ -142,6 +140,7 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
             prefs.edit().apply() {
                 val key = if (isUnfolded) TIME_UNFOLDED_KEY else TIME_FOLDED_KEY
                 putLong(key, prefs.getLong(key, 0L) + (now - stateStartTime) / 1000)
+                if (! prefs.contains(UNFOLDS_COUNT_START_TIME_KEY)) putLong(UNFOLDS_COUNT_START_TIME_KEY, now)
                 apply()
             }
             stateStartTime = now
@@ -195,7 +194,7 @@ class FoldCounterService : Service(), SensorEventListener, SharedPreferences.OnS
         private const val CHANNEL_ID = "FoldCounterServiceChannel"
 
         public fun startService(context: Context) {
-            val serviceIntent = Intent(context, FoldCounterService::class.java)
+            val serviceIntent = Intent(context, UnfoldsCounterService::class.java)
             context.startForegroundService(serviceIntent)
         }
     }

@@ -1,6 +1,3 @@
-import java.text.SimpleDateFormat
-import java.util.Date
-
 fun generateVersionCode(): Int {
     return (System.currentTimeMillis() / 1000).toInt()
 }
@@ -12,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ryosoftware.folds"
+    namespace = "com.ryosoftware.unfolds"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.ryosoftware.folds"
+        applicationId = "com.ryosoftware.unfolds"
         minSdk = 29
         targetSdk = 36
         versionCode = generateVersionCode()

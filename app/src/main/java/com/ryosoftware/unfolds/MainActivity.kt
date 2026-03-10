@@ -1,4 +1,4 @@
-package com.ryosoftware.folds
+package com.ryosoftware.unfolds
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
-import androidx.preference.Preference
 import com.google.android.material.color.DynamicColors
 import kotlin.system.exitProcess
 
@@ -27,7 +26,7 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val isIgnoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
         if (isIgnoringBatteryOptimizations) {
-            FoldCounterService.startService(this)
+            UnfoldsCounterService.startService(this)
         } else {
             killApp()
         }
@@ -43,7 +42,7 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
 
         setContentView(R.layout.main_activity)
 
-        prefs = getSharedPreferences(FoldCounterService.PREFS_NAME, Context.MODE_PRIVATE)
+        prefs = getSharedPreferences(UnfoldsCounterService.PREFS_NAME, Context.MODE_PRIVATE)
 
         val container: View = findViewById(R.id.settings_container)
         ViewCompat.setOnApplyWindowInsetsListener(container) { view, windowInsets ->
@@ -84,10 +83,10 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
                 builder.show()
             }
             else {
-                FoldCounterService.startService(this)
+                UnfoldsCounterService.startService(this)
             }
         } else {
-            FoldCounterService.startService(this)
+            UnfoldsCounterService.startService(this)
         }
 
         enableEdgeToEdge()
@@ -114,14 +113,14 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
 
     override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {
         when (key) {
-            FoldCounterService.UNFOLDS_COUNT_KEY -> {
+            UnfoldsCounterService.UNFOLDS_COUNT_KEY -> {
                 showUnfoldsCount()
             }
         }
     }
 
     private fun showUnfoldsCount() {
-        val unfoldsCount = prefs.getInt(FoldCounterService.UNFOLDS_COUNT_KEY, 0)
+        val unfoldsCount = prefs.getInt(UnfoldsCounterService.UNFOLDS_COUNT_KEY, 0)
         findViewById<TextView>(R.id.unfolds_count).setText(unfoldsCount.toString())
     }
 }
