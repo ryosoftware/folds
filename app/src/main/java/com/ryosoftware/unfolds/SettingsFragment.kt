@@ -159,7 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         unfoldsCountPref?.summary = unfoldsCount.toString()
         unfoldTimePref?.summary = getString(R.string.unfolded_time_description, getDurationString(unfoldedTime), getString(if (totalTime == 0L) R.string.percent_from_int else R.string.percent_from_float, if (totalTime == 0L) 100 else (unfoldedTime.toFloat() / totalTime.toFloat()) * 100))
-        unfoldStatsBeginPref?.summary = getDateTimeFromTimeStamp(unfoldStatsBegin)
+        unfoldStatsBeginPref?.summary = getString(R.string.stats_begin_date_description, getDateTimeFromTimeStamp(unfoldStatsBegin), getDurationString((System.currentTimeMillis() - unfoldStatsBegin) / 1000))
         unfoldStatsBeginPref?.isVisible = unfoldStatsBegin != 0L
     }
     private fun showCurrentValues() {

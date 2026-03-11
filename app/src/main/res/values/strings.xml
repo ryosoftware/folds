@@ -17,6 +17,7 @@
     <string name="hinge_stats">Hinge Stats</string>
     <string name="current_threshold">Current Threshold</string>
     <string name="stats_begin_date">Counter Start</string>
+    <string name="stats_begin_date_description">%1$s (%2$s ago)</string>
     <string name="restart_stats_message">The statistics will be reset.\nAre you sure?</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>

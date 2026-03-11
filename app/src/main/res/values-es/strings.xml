@@ -17,6 +17,7 @@
     <string name="hinge_stats">Estadísticas de la bisagra</string>
     <string name="current_threshold">Ángulo de apertura actual</string>
     <string name="stats_begin_date">Inicio del conteo</string>
+    <string name="stats_begin_date_description">%1$s (hace %2$s)</string>
     <string name="restart_stats_message">Se reiniciarán las estadísticas.\n¿Está seguro?</string>
     <string name="yes">Sí</string>
     <string name="cancel">Cancelar</string>
